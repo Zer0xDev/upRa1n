@@ -19,6 +19,23 @@ You must install and compile the following dependencies and copy their executabl
 - **homebrew** – https://brew.sh
 - **Python 3** – https://python.org
 
+## Usage
+
+```bash
+Usage: sudo python3 upRa1n.py <options>
+
+Commands:
+
+   restore               Tethered dualboot iOS 18 on iPad 6
+   boot                  Boot your device into iOS 18
+
+Example:
+
+   sudo python3 upRa1n.py restore
+   sudo python3 upRa1n.py boot
+
+```
+
 ## Installation
 
 1. Install all dependencies listed above.
@@ -35,13 +52,15 @@ You must install and compile the following dependencies and copy their executabl
 7. Run the script with sudo:
    ```bash
    cd upRa1n
-   sudo python3 upRa1n.py
+   sudo python3 upRa1n.py restore
    ```
 8. Follow the on‑screen instructions in the terminal.
 
 The `upRa1n` folder should look like this after completing all the steps:
 
 <img src="upRa1n-folder.png">
+
+
 
 ## Credits
 
