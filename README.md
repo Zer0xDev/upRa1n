@@ -22,7 +22,7 @@ You must install and compile the following dependencies and copy their executabl
 ## Usage
 
 ```bash
-Usage: python3 upRa1n.py <options>
+Usage: sudo python3 upRa1n.py <options>
 
 Commands:
 
@@ -31,8 +31,8 @@ Commands:
 
 Example:
 
-   python3 upRa1n.py restore
-   python3 upRa1n.py boot
+   sudo python3 upRa1n.py restore
+   sudo python3 upRa1n.py boot
 
 ```
 
@@ -51,8 +51,9 @@ Example:
    ```
 7. ```bash
    cd upRa1n
-   git clone https://github.com/verygenericname/SSHRD_Script/tree/67425273a90937967179d77a814bccb7f488d6fd
+   git clone https://github.com/verygenericname/SSHRD_Script.git
    ```
+8. Download the latest version of turdus_merula and rename the unzipped folder to turdus_merula
 8. Run the script WITH SUDO:
    ```bash
    cd upRa1n
