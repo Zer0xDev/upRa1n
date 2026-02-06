@@ -22,7 +22,7 @@ You must install and compile the following dependencies and copy their executabl
 ## Usage
 
 ```bash
-Usage: sudo python3 upRa1n.py <options>
+Usage: python3 upRa1n.py <options>
 
 Commands:
 
@@ -31,8 +31,8 @@ Commands:
 
 Example:
 
-   sudo python3 upRa1n.py restore
-   sudo python3 upRa1n.py boot
+   python3 upRa1n.py restore
+   python3 upRa1n.py boot
 
 ```
 
@@ -49,10 +49,10 @@ Example:
    ```bash
    pip3 install colorama art paramiko tqdm scp
    ```
-7. Run the script with sudo:
+7. Run the script:
    ```bash
    cd upRa1n
-   sudo python3 upRa1n.py restore
+   python3 upRa1n.py restore
    ```
 8. Follow the on‑screen instructions in the terminal.
 
