@@ -53,7 +53,7 @@ Example:
    cd upRa1n
    git clone https://github.com/verygenericname/SSHRD_Script.git
    ```
-8. Download the latest version of turdus_merula and rename the unzipped folder to turdus_merula
+8. Download the latest version of turdus_merula and **rename the unzipped folder to turdus_merula**
 8. Run the script WITH SUDO:
    ```bash
    cd upRa1n
