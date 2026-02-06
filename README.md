@@ -39,6 +39,10 @@ You must install and compile the following dependencies and copy their executabl
    ```
 8. Follow the on‑screen instructions in the terminal.
 
+The `upRa1n` folder should look like this after completing all the steps:
+
+<img src="upRa1n-folder.png">
+
 ## Credits
 
 - **asdfugil (Nick Chan) for the original installation guide** (https://github.com/asdfugil/ipad6-ipados18).
