@@ -1,0 +1,8 @@
+https://github.com/libimobiledevice/libimobiledevice
+https://github.com/libimobiledevice/libplist
+https://github.com/libimobiledevice/libtatsu
+https://github.com/libimobiledevice/libusbmuxd
+https://github.com/libimobiledevice/libimobiledevice-glue
+https://github.com/turdus-m3rula/libirecovery
+https://github.com/turdus-m3rula/idevicerestore_fork
+https://github.com/turdus-m3rula/libfragmentzip
