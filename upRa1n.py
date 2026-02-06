@@ -319,10 +319,10 @@ def main():
         elif "restore" in sys.argv[1]:
             pass
         else:
-            print("Usage: sudo python3 upRa1n.py <options>\n\nCommands:\n\n   restore               Tethered dualboot iOS 18 on iPad 6\n   boot                  Boot your device into iOS 18\n\nExample:\n\n   sudo python3 upRa1n.py restore\n   sudo python3 upRa1n.py boot\n")
+            print("Usage: python3 upRa1n.py <options>\n\nCommands:\n\n   restore               Tethered dualboot iOS 18 on iPad 6\n   boot                  Boot your device into iOS 18\n\nExample:\n\n   python3 upRa1n.py restore\n   python3 upRa1n.py boot\n")
             sys.exit()
     except Exception as e:
-        print("Usage: sudo python3 upRa1n.py <options>\n\nCommands:\n\n   restore               Tethered dualboot iOS 18 on iPad 6\n   boot                  Boot your device into iOS 18\n\nExample:\n\n   sudo python3 upRa1n.py restore\n   sudo python3 upRa1n.py boot\n")
+        print("Usage: python3 upRa1n.py <options>\n\nCommands:\n\n   restore               Tethered dualboot iOS 18 on iPad 6\n   boot                  Boot your device into iOS 18\n\nExample:\n\n   python3 upRa1n.py restore\n   python3 upRa1n.py boot\n")
         sys.exit()
 
 
@@ -433,12 +433,12 @@ def main():
         if ("17.7" in open("sshramdisk/version.txt", "r").readline()):
             log(message="Ramdisk already downloaded!", type="success")
         else:
-            os.system("sudo sh sshrd.sh 17.7")
+            os.system("./sshrd.sh 17.7")
     except Exception as e:
-        os.system("sudo sh sshrd.sh 17.7")
+        os.system("./sshrd.sh 17.7")
 
     log(message="Booting!", type="progress")
-    os.system("sudo sh sshrd.sh boot")
+    os.system("./sshrd.sh boot")
 
 
     log(message="Successfully booted into ramdisk! Connecting to device...", type="success")
