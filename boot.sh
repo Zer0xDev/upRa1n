@@ -1,5 +1,5 @@
 
-cd turdus_m3rula_v1.2_56442188_macosx
+cd turdus_merula
 ./bin/turdusra1n -D
 sleep 2;
 cd ..
