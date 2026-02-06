@@ -136,6 +136,7 @@ def check_dependencies():
     palera1n = False
     brew = False
     devicetree = False
+    iproxy = False
 
     if "Usage: aea command <options>" in output:
         log(message="aea installed", type="success")
@@ -208,7 +209,23 @@ def check_dependencies():
     else:
         log(message="devicetree-parse is not installed", type="error")
 
-    if img4 and iBootpatch2 and palera1n and aea and devicetree:
+    ######
+
+    result = subprocess.run(['iproxy'],
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.PIPE,
+                        text=True)
+
+
+    output = result.stderr.strip()
+
+    if "ERROR: Not enough parameters." in output:
+        log(message="iproxy installed", type="success")
+        iproxy = True
+    else:
+        log(message="iproxy is not installed", type="error")
+
+    if img4 and iBootpatch2 and palera1n and aea and devicetree and iproxy:
         log(message="All dependencies have been installed successfully!", type="success")
         return True
     else:
