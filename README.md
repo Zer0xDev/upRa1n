@@ -49,10 +49,14 @@ Example:
    ```bash
    pip3 install colorama art paramiko tqdm scp
    ```
+7. ```bash
+   cd SSHRD_Script
+   git init
+   ```
 7. Run the script:
    ```bash
    cd upRa1n
-   python3 upRa1n.py restore
+   sudo python3 upRa1n.py restore
    ```
 8. Follow the on‑screen instructions in the terminal.
 
