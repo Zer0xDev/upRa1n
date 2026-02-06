@@ -50,10 +50,10 @@ Example:
    pip3 install colorama art paramiko tqdm scp
    ```
 7. ```bash
-   cd SSHRD_Script
-   git init
+   cd upRa1n
+   git clone https://github.com/verygenericname/SSHRD_Script/tree/67425273a90937967179d77a814bccb7f488d6fd
    ```
-7. Run the script:
+8. Run the script WITH SUDO:
    ```bash
    cd upRa1n
    sudo python3 upRa1n.py restore
