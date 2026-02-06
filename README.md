@@ -6,7 +6,7 @@ Tethered dualboot iOS 18 on iPad 6 (Wi-Fi / Cellular)
 ## Description
 Tethered dualboot of iOS 18 on iPad 6 (Wi-Fi and Cellular models). The device must already be running iOS 17.7.10.
 
-**Important:** This script only works on macOS (tested on macOS Monterey on a MacBook Pro 15" 2015).
+**Important:** This script only works on macOS (tested on macOS Monterey on a MacBook Pro 15" 2015). If you have an iPad 6 Cellular, activate it before performing the dualboot.
 
 ## Dependencies
 You must install and compile the following dependencies and copy their executables to `/usr/local/bin/` (using `make` or `./autogen.sh`):
