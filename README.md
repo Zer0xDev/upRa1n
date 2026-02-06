@@ -18,6 +18,7 @@ You must install and compile the following dependencies and copy their executabl
 - **palera1n** – https://palera.in
 - **homebrew** – https://brew.sh
 - **Python 3** – https://python.org
+- **libimobiledevice (iproxy)** – ``brew install libimobiledevice`` 
 
 ## Usage
 
@@ -49,11 +50,12 @@ Example:
    ```bash
    pip3 install colorama art paramiko tqdm scp
    ```
-7. ```bash
+7. Download SSHRD Script
+   ```bash
    cd upRa1n
    git clone https://github.com/verygenericname/SSHRD_Script.git
    ```
-8. Download the latest version of turdus_merula and **rename the unzipped folder to turdus_merula**
+9. Download the latest version of turdus_merula and **rename the unzipped folder to turdus_merula**
 8. Run the script:
    ```bash
    cd upRa1n
