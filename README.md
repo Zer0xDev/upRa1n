@@ -12,7 +12,7 @@ Tethered dualboot of iOS 18 on iPad 6 (Wi-Fi and Cellular models). The device **
 You must install and compile the following dependencies and copy their executables to `/usr/local/bin/` (using `make` or `./autogen.sh`):
 
 - **aea** – https://github.com/dhinakg/aeota/tree/53e461d9788744bdd107e7d2043d71625324a682
-- **iBootPatch2** – https://github.com/asdfugil/ibootpatch2/tree/043bb71a3fd819c6a2f0481873433a40e6420f3b
+- **iBootPatch2 (ipad6 branch)** – https://github.com/asdfugil/ibootpatch2/tree/043bb71a3fd819c6a2f0481873433a40e6420f3b
 - **img4lib** – https://github.com/xerub/img4lib/tree/69772c72f3c08f021ec9fa4c386f2b3df60a38b7
 - **devicetree-parse** – https://github.com/khanhduytran0/devicetree-parse.git
 - **palera1n** – https://palera.in
