@@ -83,6 +83,7 @@ def execute_palera1n_command_with_output(command: str):
         output = stdout.read().decode('utf-8')
         errors = stderr.read().decode('utf-8')
 
+        return f"{output} {errors}"
 
     except Exception as e:
         log(message=f"Could not connect to server! {e}", type="error")
@@ -171,7 +172,7 @@ def check_dependencies():
 
     output = result.stdout.strip()
 
-    if "iBootPatch2" in output:
+    if "error opening" in output:
         log(message="iBootPatch2 installed", type="success")
         iBootpatch2 = True
     else:
@@ -286,7 +287,7 @@ def execute_ssh_command_with_output(command: str):
         output = stdout.read().decode('utf-8')
         errors = stderr.read().decode('utf-8')
 
-        return output
+        return f"{output}"
     except Exception as e:
         log(message=f"Could not connect to server! {e}", type="error")
         sys.exit()
@@ -311,13 +312,17 @@ def main():
     os.system("sudo killall iproxy")
     os.system("clear")
     print(text2art("upRa1n"))
-    print("# Tethered dualboot iPadOS 18 for iPad 6")
+    print("# Tethered dualboot/restore iPadOS 18 for iPad 6")
     print("# Developed by ZeroxDev")
     print("#===== Thanks to =====")
     print("# asdfugil for the installation guide")
     print("# Nathan (verygenericname) for SSHRD Script")
+    print("# kok3shidoll, Clarity, Mineek for turdusra1n")
+    print("# Mineek, Nick Chan, Samara, HAHALOSAH for palera1n")
+    print("# crystall1nedev for SSV patch")
     print("#=====================\n\n")
     result = check_dependencies()
+    option = ""
     if not result:
         ask = input(f"[{datetime.datetime.now().strftime("%H:%M:%S")}] Do you want to force skip dependencies check? (Y/n): ")
         log(message="WARNING! This may break installation process!", type="warning")
@@ -331,15 +336,19 @@ def main():
         log(message="Could not find unpacked iOS 17.7.10 IPSW. Download iPad 6 iOS 17.7.10 IPSW and extract it into /17.7.10 folder !", type="error")
         sys.exit()
     try:
-        if "boot" in sys.argv[1]:
+        if sys.argv[1] == "boot":
             boot_device()
         elif "restore" in sys.argv[1]:
-            pass
+            option = "restore"
+            log(message="Selected: RESTORE", type="success")
+        elif "dualboot" in sys.argv[1]:
+            option = "dualboot"
+            log(message="Selected: DUALBOOT", type="success")
         else:
-            print("Usage: python3 upRa1n.py <options>\n\nCommands:\n\n   restore               Tethered dualboot iOS 18 on iPad 6\n   boot                  Boot your device into iOS 18\n\nExample:\n\n   python3 upRa1n.py restore\n   python3 upRa1n.py boot\n")
+            print("Usage: python3 upRa1n.py <options>\n\nCommands:\n\n   restore               Tethered restore iOS 18 on iPad 6\n   dualboot              Tethered dualboot iOS 18 on iPad6\n   boot                  Boot your device into iOS 18\n\nExample:\n\n   python3 upRa1n.py restore\n   python3 upRa1n.py boot\n")
             sys.exit()
     except Exception as e:
-        print("Usage: python3 upRa1n.py <options>\n\nCommands:\n\n   restore               Tethered dualboot iOS 18 on iPad 6\n   boot                  Boot your device into iOS 18\n\nExample:\n\n   python3 upRa1n.py restore\n   python3 upRa1n.py boot\n")
+        print("Usage: python3 upRa1n.py <options>\n\nCommands:\n\n   restore               Tethered restore iOS 18 on iPad 6\n   dualboot              Tethered dualboot iOS 18 on iPad6\n   boot                  Boot your device into iOS 18\n\nExample:\n\n   python3 upRa1n.py restore\n   python3 upRa1n.py boot\n")
         sys.exit()
 
 
@@ -485,10 +494,10 @@ def main():
     log(message="Patching signature checks...", type="progress")
     os.system("./SSHRD_Script/Darwin/iBoot64Patcher LLB.bin LLB2.bin")
 
-    os.system("iBootPatch2 LLB2.bin LLB3.bin")
+    os.system("iBootPatch2 -RF -i LLB2.bin -o LLB3.bin")
     os.system("img4 -i disk2.bin -m IM4M")
     os.system("img4 -i LLB3.bin -A -T ibss -M IM4M -o LLB.img4")
-    log(message="Successfully patched signature checks!", type="success")
+    log(message="Successfully patched signature checks and SSV checks!", type="success")
 
     log(message="Mounting /dev/disk1s5 to /mnt6/ ...", type="progress")
     execute_ssh_command_without_output(command="/sbin/mount_apfs /dev/disk1s5 /mnt6")
@@ -561,7 +570,7 @@ def main():
 
 
     log(message="Mounting iOS 17...", type="progress")
-    execute_ssh_command_without_output(command="/sbin/mount_apfs -o ro /dev/disk1s1 /mnt1")
+    execute_ssh_command_without_output(command="/sbin/mount_apfs -o rw /dev/disk1s1 /mnt1")
 
     time.sleep(2)
 
@@ -626,57 +635,85 @@ def main():
     send_file_to_ssh(local_path="EVA.img4", remote_path=f"/mnt6/{boot_manifest_hash}/usr/standalone/firmware/FUD/")
     log(message="Setting up NVRam ...", type="progress")
     execute_ssh_command_without_output(f"nvram p1-fakefs-rootdev=disk1s{volume_number}")
-    log(message="Rebooting ...", type="progress")
+    if option == "restore":
+        log(message="Deleting iOS 17 ...", type="progress")
+        execute_ssh_command_without_output(command=f"cd .. && cd .. && cd .. && cd .. && cd mnt1 && rm -rf *")
+        log(message="Syncing ...", type="progress")
+        execute_ssh_command_without_output(command=f"cd .. && cd .. && cd .. && cd .. && cd mnt1 && sync")
+        snapshot_name = execute_ssh_command_with_output(command=f"cd .. && cd .. && cd .. && cd .. && snaputil -l mnt1")
+        snapshot_name = snapshot_name.replace("\n", "")
+        log(message=f"Editing snapshot: {snapshot_name} ...", type="progress")
+        log(message="Renaming ...", type="progress")
+        execute_ssh_command_without_output(command=f"cd .. && cd .. && cd .. && cd .. && snaputil -n {snapshot_name} orig-fs mnt1")
+        log(message="Deleting orig-fs ...", type="progress")
+        execute_ssh_command_without_output(command=f"cd .. && cd .. && cd .. && cd .. && snaputil -d orig-fs mnt1")
+        log(message="Unmounting ...", type="progress")
+        execute_ssh_command_without_output(command=f"cd .. && cd .. && cd .. && cd .. && cd mnt1 && sync")
+        execute_ssh_command_without_output(command=f"cd .. && cd .. && cd .. && cd .. && /sbin/umount mnt1")
+        log(message="Cleaning up files ...", type="progress")
+        execute_ssh_command_without_output(command=f"cd .. && cd .. && cd .. && cd .. && cd mnt6 && cd cryptex1 && cd current && rm -rf os.dmg && sync")
+        log(message="Successfully deleted iOS 17 !", type="success")
+    if option != "restore":
+        log(message="Rebooting into iOS 17 rootless...", type="progress")
+    else:
+        log(message="Rebooting ...", type="progress")
     time.sleep(4)
     execute_ssh_command_without_output(command="/sbin/reboot")
-    os.system("palera1n -l")
-    when_ready_to_palera1n = input("\n#### STEP 2\n\nOnce your device boots into iOS 17, press [ENTER/Return] ")
-    reconnect = input("Reconnect the cable and then press [ENTER/Return] ")
-    log(message="Waiting 15s ...", type="progress")
+    if option == "dualboot":
+        os.system("palera1n -l")
+        when_ready_to_palera1n = input("\n#### STEP 2\n\nOnce your device boots into iOS 17, press [ENTER/Return] ")
+        time.sleep(15)
+        log(message="Waiting 15s ...", type="progress")
+        reconnect = input("Reconnect the cable and then press [ENTER/Return] ")
+        log(message="Waiting 15s ...", type="progress")
 
-    time.sleep(15)
+        time.sleep(15)
 
-    os.system("clear")
-    print(text2art("upRa1n"))
+        os.system("clear")
+        print(text2art("upRa1n"))
 
-    process.terminate()
-    os.system("killall iproxy")
-    time.sleep(2)
-    process = subprocess.Popen(
-        ["iproxy", "2222", "44"],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL
-    )
+        process.terminate()
+        os.system("killall iproxy")
+        time.sleep(2)
+        process = subprocess.Popen(
+            ["iproxy", "2222", "44"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
+        )
 
-    time.sleep(4)
+        time.sleep(4)
 
-    log(message="Fixing up var ...", type="progress")
-    time.sleep(2)
-    execute_palera1n_command(command=f"mount_apfs /dev/disk1s{volume_number} /cores/fs/fake")
-    time.sleep(3)
-    execute_palera1n_command(command="rm -rf /private/var/staged_system_apps")
-    time.sleep(5)
-    execute_palera1n_command(command="mv /cores/fs/fake/private/var/staged_system_apps /private/var")
-    time.sleep(5)
-    execute_palera1n_command(command=f"nvram p1-fakefs-rootdev=disk1s{volume_number}")
-    time.sleep(3)
-    execute_palera1n_command(command="snaputil -c orig-fs /cores/fs/fake")
-    time.sleep(5)
-    log(message="Rebooting ...", type="progress")
-    time.sleep(3)
-    execute_palera1n_command("reboot")
+        log(message="Fixing up var ...", type="progress")
+        time.sleep(2)
+        execute_palera1n_command(command=f"mount_apfs /dev/disk1s{volume_number} /cores/fs/fake")
+        time.sleep(3)
+        execute_palera1n_command(command="rm -rf /private/var/staged_system_apps")
+        time.sleep(5)
+        execute_palera1n_command(command="mv /cores/fs/fake/private/var/staged_system_apps /private/var")
+        time.sleep(5)
+        execute_palera1n_command(command=f"nvram p1-fakefs-rootdev=disk1s{volume_number}")
+        time.sleep(3)
+        execute_palera1n_command(command="snaputil -c orig-fs /cores/fs/fake")
+        time.sleep(5)
+        log(message="Rebooting ...", type="progress")
+        time.sleep(3)
+        execute_palera1n_command("reboot")
 
     boot_device()
 
+    
 
 def boot_device():
     os.system("clear")
     print(text2art("upRa1n"))
-    print("# Tethered dualboot iPadOS 18 for iPad 6")
+    print("# Tethered dualboot/restore iPadOS 18 for iPad 6")
     print("# Developed by ZeroxDev")
     print("#===== Thanks to =====")
     print("# asdfugil for the installation guide")
     print("# Nathan (verygenericname) for SSHRD Script")
+    print("# kok3shidoll, Clarity, Mineek for turdusra1n")
+    print("# Mineek, Nick Chan, Samara, HAHALOSAH for palera1n")
+    print("# crystall1nedev for SSV patch")
     print("#=====================\n\n")
     enter = input(f"[{datetime.datetime.now().strftime("%H:%M:%S")}] To boot your device into iOS 18, put your device into Recovery Mode and then press [ENTER/Return] ")
     os.system("sudo sh boot.sh")
