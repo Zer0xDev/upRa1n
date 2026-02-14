@@ -8,6 +8,14 @@ Tethered dualboot/restore of iOS 18 on iPad 6 (Wi-Fi and Cellular models). The d
 
 **Important:** This script only works on macOS (tested on macOS Monterey on a MacBook Pro 15" 2015). If you have an iPad 6 Cellular, activate it before performing the dualboot.
 
+## Credits
+
+- **asdfugil (Nick Chan) for the original installation guide** (https://github.com/asdfugil/ipad6-ipados18).
+- **verygenericname (Nathan) for SSHRD Script** (https://github.com/verygenericname/SSHRD_Script).
+- **kok3shidoll, Clarity, Mineek for turdusra1n** (https://sep.lol).
+- **Mineek, Nick Chan, Samara, HAHALOSAH for palera1n** (https://palera.in)
+- **crystall1nedev for SSV patch** (https://github.com/crystall1nedev/ibootpatch2/tree/ssv-patch)
+
 ## Dependencies
 You must install and compile the following dependencies and copy their executables to `/usr/local/bin/` (using `make` or `./autogen.sh`):
 
@@ -60,7 +68,7 @@ Example:
 8. Run the script:
    ```bash
    cd upRa1n
-   python3 upRa1n.py restore
+   python3 upRa1n.py restore (or dualboot)
    ```
 8. Follow the on‑screen instructions in the terminal.
 
@@ -70,7 +78,4 @@ The `upRa1n` folder should look like this after completing all the steps:
 
 
 
-## Credits
 
-- **asdfugil (Nick Chan) for the original installation guide** (https://github.com/asdfugil/ipad6-ipados18).
-- **verygenericname (Nathan) for SSHRD Script** (https://github.com/verygenericname/SSHRD_Script).
