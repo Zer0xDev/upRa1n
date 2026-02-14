@@ -1,10 +1,10 @@
 <img src="upRa1n.png" height=150, width=150>
 
 # upRa1n
-Tethered dualboot iOS 18 on iPad 6 (Wi-Fi / Cellular)
+Tethered dualboot/restore iOS 18 on iPad 6 (Wi-Fi / Cellular)
 
 ## Description
-Tethered dualboot of iOS 18 on iPad 6 (Wi-Fi and Cellular models). The device **must already be running iOS 17.7.10.**
+Tethered dualboot/restore of iOS 18 on iPad 6 (Wi-Fi and Cellular models). The device **must already be running iOS 17.7.10.**
 
 **Important:** This script only works on macOS (tested on macOS Monterey on a MacBook Pro 15" 2015). If you have an iPad 6 Cellular, activate it before performing the dualboot.
 
@@ -12,7 +12,7 @@ Tethered dualboot of iOS 18 on iPad 6 (Wi-Fi and Cellular models). The device **
 You must install and compile the following dependencies and copy their executables to `/usr/local/bin/` (using `make` or `./autogen.sh`):
 
 - **aea** – https://github.com/dhinakg/aeota/tree/53e461d9788744bdd107e7d2043d71625324a682
-- **iBootPatch2 (ipad6 branch)** – https://github.com/asdfugil/ibootpatch2/tree/043bb71a3fd819c6a2f0481873433a40e6420f3b
+- **iBootPatch2 (ssv-patch branch)** – https://github.com/crystall1nedev/ibootpatch2/tree/ssv-patch
 - **img4lib** – https://github.com/xerub/img4lib/tree/69772c72f3c08f021ec9fa4c386f2b3df60a38b7
 - **devicetree-parse** – https://github.com/khanhduytran0/devicetree-parse.git
 - **palera1n** – https://palera.in
@@ -27,8 +27,9 @@ Usage: python3 upRa1n.py <options>
 
 Commands:
 
-   restore               Tethered dualboot iOS 18 on iPad 6
+   restore               Tethered restore iOS 18 on iPad 6
    boot                  Boot your device into iOS 18
+   dualboot              Tethered dualboot iOS 18 on iPad 6
 
 Example:
 
