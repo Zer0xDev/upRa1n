@@ -494,7 +494,7 @@ def main():
     log(message="Patching signature checks...", type="progress")
     os.system("./SSHRD_Script/Darwin/iBoot64Patcher LLB.bin LLB2.bin")
 
-    os.system("iBootPatch2 LLB2.bin LLB3.bin")
+    os.system("iBootPatch2 --t8010 LLB2.bin LLB3.bin")
     os.system("img4 -i disk2.bin -m IM4M")
     os.system("img4 -i LLB3.bin -A -T ibss -M IM4M -o LLB.img4")
     log(message="Successfully patched signature checks and SSV checks!", type="success")
