@@ -635,6 +635,7 @@ def main():
     send_file_to_ssh(local_path="EVA.img4", remote_path=f"/mnt6/{boot_manifest_hash}/usr/standalone/firmware/FUD/")
     log(message="Setting up NVRam ...", type="progress")
     execute_ssh_command_without_output(f"nvram p1-fakefs-rootdev=disk1s{volume_number}")
+    time.sleep(2)
     if option == "restore":
         log(message="Deleting iOS 17 ...", type="progress")
         execute_ssh_command_without_output(command=f"cd .. && cd .. && cd .. && cd .. && cd mnt1 && rm -rf *")
