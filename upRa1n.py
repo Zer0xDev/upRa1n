@@ -108,6 +108,7 @@ def check_dependencies():
     devicetree = False
     iproxy = False
     devicetreerepack = False
+    turdus = False
 
     if "Usage: aea command <options>" in output:
         log(message="aea installed", type="success")
@@ -212,7 +213,13 @@ def check_dependencies():
     else:
         log(message="iproxy is not installed", type="error")
 
-    if img4 and iBootpatch2 and palera1n and aea and devicetree and iproxy and devicetreerepack:
+    if os.path.exists("turdus_merula"):
+        log(message="turdus_merula installed", type="success")
+        turdus = True
+    else:
+        log(message="turdus_merula is not installed", type="error")
+
+    if img4 and iBootpatch2 and palera1n and aea and devicetree and iproxy and devicetreerepack and turdus:
         log(message="All dependencies have been installed successfully!", type="success")
         return True
     else:
