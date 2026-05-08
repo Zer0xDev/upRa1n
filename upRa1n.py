@@ -59,37 +59,6 @@ def download_file_from_device(file: str):
     scp.close()
     log(message="[==================================================] 100.0%", type="success")
 
-def execute_palera1n_command_with_output(command: str):
-    hostname = "localhost"
-    port = 2222
-    username = "root"
-    password = "alpine"
-
-    client = paramiko.SSHClient()
-
-    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-
-    try:
-        client.connect(
-            hostname=hostname,
-            port=port,
-            username=username,
-            password=password,
-            timeout=3
-        )
-
-        stdin, stdout, stderr = client.exec_command(command)
-
-        output = stdout.read().decode('utf-8')
-        errors = stderr.read().decode('utf-8')
-
-        return f"{output} {errors}"
-
-    except Exception as e:
-        log(message=f"Could not connect to server! {e}", type="error")
-        sys.exit()
-    finally:
-        client.close()
 
 def execute_palera1n_command(command: str):
     hostname = "localhost"
@@ -138,6 +107,7 @@ def check_dependencies():
     brew = False
     devicetree = False
     iproxy = False
+    devicetreerepack = False
 
     if "Usage: aea command <options>" in output:
         log(message="aea installed", type="success")
@@ -212,6 +182,22 @@ def check_dependencies():
 
     ######
 
+    result = subprocess.run(['devicetree-repack'],
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.PIPE,
+                        text=True)
+
+
+    output = result.stdout.strip()
+
+    if "Usage: " in output:
+        log(message="devicetree-repack installed", type="success")
+        devicetreerepack = True
+    else:
+        log(message="devicetree-repack is not installed", type="error")
+
+    ######
+
     result = subprocess.run(['iproxy'],
                         stdout=subprocess.PIPE,
                         stderr=subprocess.PIPE,
@@ -226,7 +212,7 @@ def check_dependencies():
     else:
         log(message="iproxy is not installed", type="error")
 
-    if img4 and iBootpatch2 and palera1n and aea and devicetree and iproxy:
+    if img4 and iBootpatch2 and palera1n and aea and devicetree and iproxy and devicetreerepack:
         log(message="All dependencies have been installed successfully!", type="success")
         return True
     else:
@@ -392,7 +378,7 @@ def main():
 
     ipsw_file_input = int(input("\n==> Select iOS 18 IPSW file: "))
     version = input("\n==> Enter iOS Version: ")
-    model = input("\n==> Enter iPad model (1 -- WiFi, 2 -- Cellular): ")
+    model = input("\n==> Select iPad model (1 -- WiFi, 2 -- Cellular): ")
     volume_number = 0
     ipad_file = ""
     if model == "1":
@@ -480,8 +466,8 @@ def main():
     os.chdir("..")
 
     log(message="Mounting tmpfs to /mnt5 ...", type="progress")
-    execute_ssh_command_without_output(command="/sbin/mount_tmpfs /mnt5")
-    execute_ssh_command_without_output(command="dd if=/dev/disk2 of=/mnt5/disk2.bin")
+    execute_ssh_command_with_output(command="/sbin/mount_tmpfs /mnt5")
+    execute_ssh_command_with_output(command="dd if=/dev/disk2 of=/mnt5/disk2.bin")
 
     log(message="Downloading /mnt5/disk2.bin to host...", type="progress")
     download_file_from_device(file="/mnt5/disk2.bin")
@@ -494,13 +480,13 @@ def main():
     log(message="Patching signature checks...", type="progress")
     os.system("./SSHRD_Script/Darwin/iBoot64Patcher LLB.bin LLB2.bin")
 
-    os.system("iBootPatch2 -RF -i LLB2.bin -o LLB3.bin")
+    os.system("iBootpatch2 -RF -i LLB2.bin -o LLB3.bin")
     os.system("img4 -i disk2.bin -m IM4M")
     os.system("img4 -i LLB3.bin -A -T ibss -M IM4M -o LLB.img4")
     log(message="Successfully patched signature checks and SSV checks!", type="success")
 
     log(message="Mounting /dev/disk1s5 to /mnt6/ ...", type="progress")
-    execute_ssh_command_without_output(command="/sbin/mount_apfs /dev/disk1s5 /mnt6")
+    execute_ssh_command_with_output(command="/sbin/mount_apfs /dev/disk1s5 /mnt6")
 
     time.sleep(3)
 
@@ -517,21 +503,21 @@ def main():
 
     log(message="Copying files...", type="progress")
 
-    execute_ssh_command_without_output(command="mkdir -p /mnt6/cryptex1/currend")
+    execute_ssh_command_with_output(command="mkdir -p /mnt6/cryptex1/currend")
     time.sleep(2)
-    execute_ssh_command_without_output(command="cp -a /mnt6/cryptex1/current/apticket.*.im4m /mnt6/cryptex1/currend")
+    execute_ssh_command_with_output(command="cp -a /mnt6/cryptex1/current/apticket.*.im4m /mnt6/cryptex1/currend")
     time.sleep(2)
-    execute_ssh_command_without_output(command="cp -a /mnt6/cryptex1/current/*.{root_hash,trustcache} /mnt6/cryptex1/currend")
+    execute_ssh_command_with_output(command="cp -a /mnt6/cryptex1/current/*.{root_hash,trustcache} /mnt6/cryptex1/currend")
     time.sleep(2)
 
     log(message="Creating file system...", type="progress")
 
-    execute_ssh_command_without_output(command="/sbin/newfs_apfs -A -D -o role=r -v Xystem /dev/disk0s1")
+    execute_ssh_command_with_output(command="/sbin/newfs_apfs -A -D -o role=r -v Xystem /dev/disk0s1")
     time.sleep(2)
 
     log(message="Mounting new volume...", type="progress")
 
-    execute_ssh_command_without_output(command=f"/sbin/mount_apfs /dev/disk1s{volume_number} /mnt8")
+    execute_ssh_command_with_output(command=f"/sbin/mount_apfs /dev/disk1s{volume_number} /mnt8")
     time.sleep(2)
 
     time.sleep(3)
@@ -542,20 +528,20 @@ def main():
 
 
     log(message="Unmounting /mnt8 ...", type="progress")
-    execute_ssh_command_without_output(command="/sbin/umount /mnt8")
+    execute_ssh_command_with_output(command="/sbin/umount /mnt8")
     time.sleep(2)
     log(message="Unmounting /mnt6 ...", type="progress")
-    execute_ssh_command_without_output(command="/sbin/umount /mnt6")
+    execute_ssh_command_with_output(command="/sbin/umount /mnt6")
     time.sleep(2)
 
     log(message="APFS invert. This may take a few minutes... ", type="progress")
-    execute_ssh_command_without_output(command=f"/System/Library/Filesystems/apfs.fs/apfs_invert -d /dev/disk0s1 -s {volume_number} -n root.dmg")
+    execute_ssh_command_with_output(command=f"/System/Library/Filesystems/apfs.fs/apfs_invert -d /dev/disk0s1 -s {volume_number} -n root.dmg")
     time.sleep(2)
 
     log(message=f"Mounting /dev/disk1s5 and /dev/disk1s{volume_number} ...", type="progress")
-    execute_ssh_command_without_output(command="/sbin/mount_apfs /dev/disk1s5 /mnt6")
+    execute_ssh_command_with_output(command="/sbin/mount_apfs /dev/disk1s5 /mnt6")
     time.sleep(2)
-    execute_ssh_command_without_output(command=f"/sbin/mount_apfs /dev/disk1s{volume_number} /mnt8")
+    execute_ssh_command_with_output(command=f"/sbin/mount_apfs /dev/disk1s{volume_number} /mnt8")
     time.sleep(2)
 
     log(message="Uploading system cryptex. This may take up to 15 minutes... ", type="progress")
@@ -570,7 +556,7 @@ def main():
 
 
     log(message="Mounting iOS 17...", type="progress")
-    execute_ssh_command_without_output(command="/sbin/mount_apfs -o rw /dev/disk1s1 /mnt1")
+    execute_ssh_command_with_output(command="/sbin/mount_apfs -o rw /dev/disk1s1 /mnt1")
 
     time.sleep(2)
 
@@ -578,39 +564,39 @@ def main():
 
     find_command = "find /mnt1 -iregex '.*j7[1-2]b.*' -type f -exec /bin/sh -c 'dirname=" + '"$(echo "{}" | sed -E ' + "'\\''s|^/mnt1(/.+)/.+$|\\1|'\\'')" + '"; filename="$(echo "{}" | sed -E ' + "'\\''s|/mnt1/.+/(.+)$|\\1|'\\'')" + '"; mkdir -p ' + '"/mnt8/${dirname}"; cp -an "{}" "/mnt8/${dirname}/${filename}";' + "' \\;"
 
-    execute_ssh_command_without_output(command=find_command)
+    execute_ssh_command_with_output(command=find_command)
     
     time.sleep(2)
 
 
     log(message="Adding iPad 6 specific files...", type="progress")
-    execute_ssh_command_without_output(command="ln -s J171.Default.plist /mnt8/System/Library/EventTimingProfiles/J71b.Default.plist")
+    execute_ssh_command_with_output(command="ln -s J171.Default.plist /mnt8/System/Library/EventTimingProfiles/J71b.Default.plist")
     time.sleep(2)
-    execute_ssh_command_without_output(command="ln -s J171.Touch.plist /mnt8/System/Library/EventTimingProfiles/J71b.Touch.plist")
+    execute_ssh_command_with_output(command="ln -s J171.Touch.plist /mnt8/System/Library/EventTimingProfiles/J71b.Touch.plist")
     time.sleep(2)
-    execute_ssh_command_without_output(command="ln -s J171.Pencil.plist /mnt8/System/Library/EventTimingProfiles/J71b.Pencil.plist")
+    execute_ssh_command_with_output(command="ln -s J171.Pencil.plist /mnt8/System/Library/EventTimingProfiles/J71b.Pencil.plist")
     time.sleep(2)
-    execute_ssh_command_without_output(command="ln -s J172.Default.plist /mnt8/System/Library/EventTimingProfiles/J72b.Default.plist")
+    execute_ssh_command_with_output(command="ln -s J172.Default.plist /mnt8/System/Library/EventTimingProfiles/J72b.Default.plist")
     time.sleep(2)
-    execute_ssh_command_without_output(command="ln -s J172.Touch.plist /mnt8/System/Library/EventTimingProfiles/J72b.Touch.plist")
+    execute_ssh_command_with_output(command="ln -s J172.Touch.plist /mnt8/System/Library/EventTimingProfiles/J72b.Touch.plist")
     time.sleep(2)
-    execute_ssh_command_without_output(command="ln -s J172.Pencil.plist /mnt8/System/Library/EventTimingProfiles/J72b.Pencil.plist")
+    execute_ssh_command_with_output(command="ln -s J172.Pencil.plist /mnt8/System/Library/EventTimingProfiles/J72b.Pencil.plist")
     time.sleep(2)
 
     log(message="Downgrading components ...", type="progress")
     time.sleep(2)
-    execute_ssh_command_without_output(command="mv /mnt8/Library/Audio/Plug-Ins{,.bak}")
-    execute_ssh_command_without_output(command="cp -a /mnt1/Library/Audio/Plug-Ins /mnt8/Library/Audio")
+    execute_ssh_command_with_output(command="mv /mnt8/Library/Audio/Plug-Ins{,.bak}")
+    execute_ssh_command_with_output(command="cp -a /mnt1/Library/Audio/Plug-Ins /mnt8/Library/Audio")
     time.sleep(2)
-    execute_ssh_command_without_output(command="mv /mnt8/usr/sbin/BlueTool{,.bak}")
-    execute_ssh_command_without_output(command="cp -a /mnt1/usr/sbin/BlueTool /mnt8/usr/sbin")
+    execute_ssh_command_with_output(command="mv /mnt8/usr/sbin/BlueTool{,.bak}")
+    execute_ssh_command_with_output(command="cp -a /mnt1/usr/sbin/BlueTool /mnt8/usr/sbin")
     time.sleep(2)
 
     log(message="Patching RootFS ...", type="progress")
 
-    execute_ssh_command_without_output(command="sed -i -e 's|cryptex1/current|cryptex1/currend|' /mnt8/usr/lib/dyld")
+    execute_ssh_command_with_output(command="sed -i -e 's|cryptex1/current|cryptex1/currend|' /mnt8/usr/lib/dyld")
     time.sleep(2)
-    execute_ssh_command_without_output(command="ldid -Icom.apple.dyld -S /mnt8/usr/lib/dyld")
+    execute_ssh_command_with_output(command="ldid -Icom.apple.dyld -S /mnt8/usr/lib/dyld")
     time.sleep(2)
 
     log(message="Patching device tree...", type="progress")
@@ -620,7 +606,7 @@ def main():
 
     log(message="Wrapping up files...", type="progress")
     os.system(f"img4 -i {version}/kernelcache.release.ipad7c -M IM4M -o kernelcachd")
-    os.system("devicetree-repack DeviceTree_j71bap.jsonc devicetred")
+    os.system(f"devicetree-repack DeviceTree_j{ipad_file}bap.jsonc devicetred")
     os.system("img4 -i devicetred -M IM4M -A -T dtre -o devicetred.img4")
 
     log(message="Uploading kernelcachd ...", type="progress")
@@ -633,13 +619,10 @@ def main():
     os.system(f"img4 -i {version}/Firmware/ave/AppleAVE2FW_H9.im4p -M IM4M -o EVA.img4")
     log(message="Uploading EVA.img4 ...", type="progress")
     send_file_to_ssh(local_path="EVA.img4", remote_path=f"/mnt6/{boot_manifest_hash}/usr/standalone/firmware/FUD/")
-    log(message="Setting up NVRam ...", type="progress")
-    execute_ssh_command_without_output(f"nvram p1-fakefs-rootdev=disk1s{volume_number}")
     time.sleep(2)
     if option == "restore":
         log(message="Deleting iOS 17 ...", type="progress")
         execute_ssh_command_without_output(command=f"cd .. && cd .. && cd .. && cd .. && cd mnt1 && rm -rf *")
-        log(message="Syncing ...", type="progress")
         execute_ssh_command_without_output(command=f"cd .. && cd .. && cd .. && cd .. && cd mnt1 && sync")
         snapshot_name = execute_ssh_command_with_output(command=f"cd .. && cd .. && cd .. && cd .. && snaputil -l mnt1")
         snapshot_name = snapshot_name.replace("\n", "")
@@ -654,6 +637,8 @@ def main():
         log(message="Cleaning up files ...", type="progress")
         execute_ssh_command_without_output(command=f"cd .. && cd .. && cd .. && cd .. && cd mnt6 && cd cryptex1 && cd current && rm -rf os.dmg && sync")
         log(message="Successfully deleted iOS 17 !", type="success")
+        log(message="Setting up NVRam ...", type="progress")
+        execute_ssh_command_with_output(command=f"/usr/sbin/nvram p1-fakefs-rootdev=disk1s{volume_number}")
     if option != "restore":
         log(message="Rebooting into iOS 17 rootless...", type="progress")
     else:
@@ -663,8 +648,8 @@ def main():
     if option == "dualboot":
         os.system("palera1n -l")
         when_ready_to_palera1n = input("\n#### STEP 2\n\nOnce your device boots into iOS 17, press [ENTER/Return] ")
-        time.sleep(15)
         log(message="Waiting 15s ...", type="progress")
+        time.sleep(15)
         reconnect = input("Reconnect the cable and then press [ENTER/Return] ")
         log(message="Waiting 15s ...", type="progress")
 
@@ -691,7 +676,7 @@ def main():
         execute_palera1n_command(command="rm -rf /private/var/staged_system_apps")
         time.sleep(5)
         execute_palera1n_command(command="mv /cores/fs/fake/private/var/staged_system_apps /private/var")
-        time.sleep(5)
+        time.sleep(15)
         execute_palera1n_command(command=f"nvram p1-fakefs-rootdev=disk1s{volume_number}")
         time.sleep(3)
         execute_palera1n_command(command="snaputil -c orig-fs /cores/fs/fake")
@@ -700,8 +685,9 @@ def main():
         time.sleep(3)
         execute_palera1n_command("reboot")
 
-    boot_device()
-
+        boot_device()
+    else:
+        boot_device()
     
 
 def boot_device():
