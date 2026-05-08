@@ -677,7 +677,7 @@ def main():
         time.sleep(5)
         execute_palera1n_command(command="mv /cores/fs/fake/private/var/staged_system_apps /private/var")
         time.sleep(15)
-        execute_palera1n_command(command=f"nvram p1-fakefs-rootdev=disk1s{volume_number}")
+        execute_palera1n_command(command=f"/usr/sbin/nvram p1-fakefs-rootdev=disk1s{volume_number}")
         time.sleep(3)
         execute_palera1n_command(command="snaputil -c orig-fs /cores/fs/fake")
         time.sleep(5)
