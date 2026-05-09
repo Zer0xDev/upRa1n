@@ -21,7 +21,7 @@ Tethered dualboot/restore of iOS 18 on iPad 6 (Wi-Fi and Cellular models). The d
 You must install and compile the following dependencies and copy their executables to `/usr/local/bin/` (using `make` or `./autogen.sh`):
 
 > [!TIP]
-> The compiled files are in Releases. But I HIGHLY recommend compiling them manually
+> The compiled dependencies (for intel mac) are in Releases. But I HIGHLY recommend compiling them manually
 
 - **aea** – https://github.com/dhinakg/aeota/tree/53e461d9788744bdd107e7d2043d71625324a682
 - **iBootpatch2** – https://github.com/Zer0xDev/upRa1n/blob/main/ibootpatch2-ssv-patch.zip
