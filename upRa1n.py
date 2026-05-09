@@ -100,7 +100,7 @@ def check_dependencies():
 
     output = result.stderr.strip()
 
-    aea = False
+    aea = True
     img4 = False
     iBootpatch2 = False
     palera1n = False
