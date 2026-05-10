@@ -99,8 +99,9 @@ def check_dependencies():
 
 
     output = result.stderr.strip()
+    output1 = result.stdout.strip()
 
-    aea = True
+    aea = False
     img4 = False
     iBootpatch2 = False
     palera1n = False
@@ -110,7 +111,7 @@ def check_dependencies():
     devicetreerepack = False
     turdus = False
 
-    if "Usage: aea command <options>" in output:
+    if "Usage: aea command <options>" in output or "Usage: aea command <options>" in output1:
         log(message="aea installed", type="success")
         aea = True
     else:
@@ -301,6 +302,12 @@ def check_and_delete(filename: str):
     if os.path.exists(filename):
         os.remove(filename)
 
+def jailbreak_device():
+    log(message="Okay, we'll run palera1n so you can jailbreak your iPad", type="progress")
+    os.system("palera1n -l")
+    ask = input(f"[{datetime.datetime.now().strftime("%H:%M:%S")}] Once your device boots into iOS 17, press [ENTER/Return] ")
+
+
 def main():
     os.system("sudo killall iproxy")
     os.system("clear")
@@ -441,6 +448,40 @@ def main():
                 
         os.chdir("..")
     
+    ask_for_jailbreak = input(f"[{datetime.datetime.now().strftime("%H:%M:%S")}] Is your device jailbroken? [Y/n]: ")
+
+    if ask_for_jailbreak == "n" or ask_for_jailbreak == "N":
+        jailbreak_device()
+    elif ask_for_jailbreak == "y" or ask_for_jailbreak == "Y":
+        pass
+    else:
+        log(message="Unknown input (Y/n)", type="error")
+        sys.exit()
+    
+    log(message="Waiting 15s ...", type="progress")
+    time.sleep(15)
+
+    reconnect_cable = input(f"[{datetime.datetime.now().strftime("%H:%M:%S")}] Reconnect the cable and then press [ENTER/Return] ")
+
+    log(message="Waiting 15s ...", type="progress")
+
+    time.sleep(15)
+
+    process = subprocess.Popen(
+        ["iproxy", "2222", "44"],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL
+    )
+
+    time.sleep(1)
+
+    log(message="Setting up NVRam ...", type="progress")
+
+    execute_palera1n_command(command=f"/usr/sbin/nvram p1-fakefs-rootdev=disk1s{volume_number}")
+
+    time.sleep(3)
+    
+    os.system("killall iproxy")
 
     os.chdir("SSHRD_Script")
 
