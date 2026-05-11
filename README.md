@@ -31,6 +31,7 @@ You must install and compile the following dependencies and copy their executabl
 - **homebrew** – https://brew.sh
 - **Python 3** – https://python.org
 - **libimobiledevice (iproxy)** – ``brew install libimobiledevice``
+- **libirecovery** - ``brew install libirecovery``
 - **pongoterm** - https://github.com/palera1n/PongoOS/blob/iOS15/scripts/pongoterm.c
 
 ## Usage
