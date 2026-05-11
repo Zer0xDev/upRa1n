@@ -62,7 +62,7 @@ Example:
 5. Extract the iOS 17.7.10 firmware into a folder named `17.7.10/`.
 6. Install required Python packages:
    ```bash
-   pip3 install colorama art paramiko tqdm scp requests
+   pip3 install colorama art paramiko tqdm scp requests pyhpke
    ```
 7. Download SSHRD Script
    ```bash
@@ -82,12 +82,6 @@ The `upRa1n` folder should look like this after completing all the steps:
 <img src="upRa1n-folder.png">
 
 ## Known issues
-
-- ### No module named "pyhpke"
-Solution:
-```bash
-pip3 install pyhpke
-```
 
 - ### There's no palera1n on the home screen
 Solution:
