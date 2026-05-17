@@ -1,15 +1,15 @@
 import os
 import shutil
-import subprocess
-import sys
-import paramiko
-import time
-import datetime
-
 from colorama import *
+import subprocess
 from art import text2art
 from zipfile import ZipFile
+import sys
+import paramiko
 from scp import SCPClient
+import time
+from tqdm import tqdm
+import datetime
 
 def send_file_to_ssh(local_path: str, remote_path: str):
     hostname = "localhost"
@@ -91,39 +91,6 @@ def execute_palera1n_command(command: str):
     finally:
         client.close()
 
-def execute_palera1n_command_with_output(command: str):
-    hostname = "localhost"
-    port = 2222
-    username = "root"
-    password = "alpine"
-
-    client = paramiko.SSHClient()
-
-    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-
-    try:
-        client.connect(
-            hostname=hostname,
-            port=port,
-            username=username,
-            password=password,
-            timeout=3
-        )
-
-        stdin, stdout, stderr = client.exec_command(command)
-
-        output = stdout.read().decode('utf-8')
-        errors = stderr.read().decode('utf-8')
-
-        return f"{output}"
-
-    except Exception as e:
-        log(message=f"Could not connect to server! {e}", type="error")
-        sys.exit()
-    finally:
-        client.close()
-
-
 def check_dependencies():
     result = subprocess.run(['aea'],
                        stdout=subprocess.PIPE,
@@ -143,8 +110,6 @@ def check_dependencies():
     iproxy = False
     devicetreerepack = False
     turdus = False
-    irecovery = False
-    sshrd = False
 
     if "Usage: aea command <options>" in output or "Usage: aea command <options>" in output1:
         log(message="aea installed", type="success")
@@ -162,7 +127,7 @@ def check_dependencies():
 
     output = result.stderr.strip()
 
-    if "[e] no input file name" in output:
+    if shutil.which("img4"):
         log(message="img4 installed", type="success")
         img4 = True
     else:
@@ -179,7 +144,7 @@ def check_dependencies():
 
     output = result.stdout.strip()
 
-    if "error opening" in output:
+    if shutil.which("iBootPatch2"):
         log(message="iBootPatch2 installed", type="success")
         iBootpatch2 = True
     else:
@@ -249,34 +214,13 @@ def check_dependencies():
     else:
         log(message="iproxy is not installed", type="error")
 
-    result = subprocess.run(['irecovery'],
-                        stdout=subprocess.PIPE,
-                        stderr=subprocess.PIPE,
-                        text=True)
-
-
-    output1 = result.stderr.strip()
-    output2 = result.stdout.strip()
-
-    if "Usage: irecovery" in output1 or "Usage: irecovery" in output2:
-        log(message="irecovery installed", type="success")
-        irecovery = True
-    else:
-        log(message="irecovery is not installed", type="error")
-
     if os.path.exists("turdus_merula"):
         log(message="turdus_merula installed", type="success")
         turdus = True
     else:
         log(message="turdus_merula is not installed", type="error")
 
-    if os.path.exists("SSHRD_Script"):
-        log(message="SSHRD_Script found", type="success")
-        sshrd = True
-    else:
-        log(message="SSHRD_Script wasn't found", type="error")
-
-    if img4 and iBootpatch2 and palera1n and aea and devicetree and iproxy and devicetreerepack and turdus and irecovery and sshrd:
+    if img4 and iBootpatch2 and palera1n and aea and devicetree and iproxy and devicetreerepack and turdus:
         log(message="All dependencies have been installed successfully!", type="success")
         return True
     else:
@@ -346,29 +290,28 @@ def execute_ssh_command_with_output(command: str):
 
 def log(message: str, type: str):
     if type == "error":
-        print(f"[{Fore.RED}{datetime.datetime.now().strftime("%H:%M:%S")}{Fore.RESET}] {message}")
+        print(f"[{Fore.RED}{datetime.datetime.now().strftime('%H:%M:%S')}{Fore.RESET}] {message}")
     elif type == "warning":
-        print(f"[{Fore.YELLOW}{datetime.datetime.now().strftime("%H:%M:%S")}{Fore.RESET}] {message}")
+        print(f"[{Fore.YELLOW}{datetime.datetime.now().strftime('%H:%M:%S')}{Fore.RESET}] {message}")
     elif type == "success":
-        print(f"[{Fore.GREEN}{datetime.datetime.now().strftime("%H:%M:%S")}{Fore.RESET}] {message}")
+        print(f"[{Fore.GREEN}{datetime.datetime.now().strftime('%H:%M:%S')}{Fore.RESET}] {message}")
     elif type == "progress":
-        print(f"[{Fore.BLUE}{datetime.datetime.now().strftime("%H:%M:%S")}{Fore.RESET}] {message}")
+        print(f"[{Fore.BLUE}{datetime.datetime.now().strftime('%H:%M:%S')}{Fore.RESET}] {message}")
 
 def check_and_delete(filename: str):
     if os.path.exists(filename):
         os.remove(filename)
 
 def jailbreak_device():
-    log(message="Okay, we'll run palera1n so you can jailbreak your iPad.", type="progress")
-    time.sleep(1)
+    log(message="Okay, we'll run palera1n so you can jailbreak your iPad", type="progress")
     os.system("palera1n -l")
-    ask = input(f"[{datetime.datetime.now().strftime("%H:%M:%S")}] Once your device boots into iOS 17, press [ENTER/Return] ")
+    ask = input(f"[{datetime.datetime.now().strftime('%H:%M:%S')}] Once your device boots into iOS 17, press [ENTER/Return] ")
 
 
 def main():
     os.system("sudo killall iproxy")
     os.system("clear")
-    print(text2art("upRa1n", font='tasty1'))
+    print(text2art("upRa1n"))
     print("# Tethered dualboot/restore iPadOS 18 for iPad 6")
     print("# Developed by ZeroxDev")
     print("#===== Thanks to =====")
@@ -381,16 +324,16 @@ def main():
     result = check_dependencies()
     option = ""
     if not result:
-        ask = input(f"[{datetime.datetime.now().strftime("%H:%M:%S")}] Do you want to force skip dependencies check? (Y/n): ")
+        ask = input(f"[{datetime.datetime.now().strftime('%H:%M:%S')}] Do you want to force skip dependencies check? (Y/n): ")
         log(message="WARNING! This may break installation process!", type="warning")
         if "y" or "Y" in ask:
             log(message="Force skipping dependencies check ...", type="warning")
         else:
             sys.exit()
-    if os.path.exists("17.7.10") or os.path.exists("17.7.11"):
+    if os.path.exists("17.7.10"):
         pass
     else:
-        log(message="Could not find unpacked iOS 17.7.10 or 17.7.11 IPSW. Download iPad 6 iOS 17.7.10 (.11) IPSW and extract it into /17.7.10 (.11) folder !", type="error")
+        log(message="Could not find unpacked iOS 17.7.10 IPSW. Download iPad 6 iOS 17.7.10 IPSW and extract it into /17.7.10 folder !", type="error")
         sys.exit()
     try:
         if sys.argv[1] == "boot":
@@ -410,7 +353,7 @@ def main():
 
 
     if os.path.exists("disk2.bin"):
-        ask = input(f"[{datetime.datetime.now().strftime("%H:%M:%S")}] Do you want to clean old files? (Y/n): ")
+        ask = input(f"[{datetime.datetime.now().strftime('%H:%M:%S')}] Do you want to clean old files? (Y/n): ")
         if "y" in ask or "Y" in ask:
             check_and_delete("IM4M")
             check_and_delete("devicetred")
@@ -450,12 +393,6 @@ def main():
     ipsw_file_input = int(input("\n==> Select iOS 18 IPSW file: "))
     version = input("\n==> Enter iOS Version: ")
     model = input("\n==> Select iPad model (1 -- WiFi, 2 -- Cellular): ")
-    currentOSVersion = input("\n==> What version of iPadOS is installed on your device?: ")
-    if (currentOSVersion == "17.7.10" or currentOSVersion == "17.7.11"):
-        pass
-    else:
-        log(message="Unsupported iPadOS version. Update your iPad to iPadOS 17.7.10 or 17.7.11", type="error")
-        sys.exit()
     volume_number = 0
     ipad_file = ""
     if model == "1":
@@ -477,7 +414,6 @@ def main():
             shutil.rmtree(version)
             sys.exit()
     else:
-        warning = input(f"[{datetime.datetime.now().strftime("%H:%M:%S")}] Make sure you have more than 25GB of free space on your Mac, otherwise the script may not work. Press [ENTER/Return]")
         log(message="Unpacking IPSW file...", type="progress")
         try:
             ipsw = ZipFile(file=ipsw_file)
@@ -499,52 +435,33 @@ def main():
                 if os.path.getsize(file) < 3000000000:
                     log(message=f"Found OS.dmg! Decrypting {file} ...", type="progress")
                     os.system(f'aea decrypt -i {file} -o os.dmg -key-value "base64:$(python3 get_key.py {file})"')
-                    log(message="Validating os.dmg ...", type="progress")
-                    if os.path.getsize("os.dmg") > 100:
-                        log(message=f"Successfully unpacked {file} to OS.dmg!", type="success")
-                    else:
-                        log(message=f"An error occurred while unpacking {file}", type="error")
-                        shutil.rmtree(version)
-                        sys.exit()
+                    log(message=f"Successfully unpacked {file} to OS.dmg!", type="success")
                 else:
                     log(message=f"Found ROOT.dmg! Decrypting {file} ...", type="progress")
                     os.system(f'aea decrypt -i {file} -o root.dmg -key-value "base64:$(python3 get_key.py {file})"')
-                    log(message="Validating root.dmg ...", type="progress")
-                    if os.path.getsize("root.dmg") > 100:
-                        log(message=f"Successfully unpacked {file} to ROOT.dmg!", type="success")
-                    else:
-                        log(message=f"An error occurred while unpacking {file}", type="error")
-                        shutil.rmtree(version)
-                        sys.exit()
+                    log(message=f"Successfully unpacked {file} to ROOT.dmg!", type="success")
             else:
                 if ".dmg" in file:
-                    if os.path.getsize(file) < 30000000:
+                    if os.path.getsize(file) < 20000000:
                         log(message=f"Found App Cryptex! Renaming to app.dmg ...", type="progress")
                         os.rename(file, "app.dmg")
-                        log(message="Validating app.dmg ...", type="progress")
-                        if os.path.getsize("app.dmg") > 100:
-                            log(message=f"Successfully renamed {file}", type="success")
-                        else:
-                            log(message=f"An error occurred while renaming {file}", type="error")
-                            shutil.rmtree(version)
-                            sys.exit()
                 
         os.chdir("..")
     
-    ask_for_jailbreak = input(f"[{datetime.datetime.now().strftime("%H:%M:%S")}] Is your device jailbroken? [Y/n]: ")
+    ask_for_jailbreak = input(f"[{datetime.datetime.now().strftime('%H:%M:%S')}] Is your device jailbroken? [Y/n]: ")
 
     if ask_for_jailbreak == "n" or ask_for_jailbreak == "N":
         jailbreak_device()
     elif ask_for_jailbreak == "y" or ask_for_jailbreak == "Y":
         pass
     else:
-        log(message="Unknown input. (Y/n)", type="error")
+        log(message="Unknown input (Y/n)", type="error")
         sys.exit()
     
     log(message="Waiting 15s ...", type="progress")
     time.sleep(15)
 
-    reconnect_cable = input(f"[{datetime.datetime.now().strftime("%H:%M:%S")}] Reconnect the cable and then press [ENTER/Return] ")
+    reconnect_cable = input(f"[{datetime.datetime.now().strftime('%H:%M:%S')}] Reconnect the cable and then press [ENTER/Return] ")
 
     log(message="Waiting 15s ...", type="progress")
 
@@ -555,8 +472,6 @@ def main():
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL
     )
-
-    warning = input(f"[{datetime.datetime.now().strftime("%H:%M:%S")}] Make sure you have more than 5GB of free space on your Mac, otherwise the script may not work. Press [ENTER/Return]")
 
     time.sleep(1)
 
@@ -570,7 +485,7 @@ def main():
 
     os.chdir("SSHRD_Script")
 
-    user_put_dfu = input(f"[{datetime.datetime.now().strftime("%H:%M:%S")}] Put your device into Recovery Mode, then into DFU mode and then press [ENTER/Return]: ")
+    user_put_dfu = input(f"[{datetime.datetime.now().strftime('%H:%M:%S')}] Put your device into Recovery Mode, then into DFU mode and then press [ENTER/Return]: ")
 
     log(message="Downloading iOS 17.7 ramdisk...", type="progress")
 
@@ -607,10 +522,7 @@ def main():
     log(message="Successfully downloaded DISK2.bin !", type="success")
 
     log(message="Downloading bootloader from iPad 6 IPSW...", type="progress")
-    if currentOSVersion == "17.7.10":
-        os.system(f"img4 -i 17.7.10/Firmware/all_flash/LLB.ipad7b.RELEASE.im4p -k 07e6e3098054425fcdc83d47351a7d9439512c4e0297ac7162250e6d543f5d55fda2fefed210aa446c70e6d529292861 -o LLB.bin")
-    elif currentOSVersion == "17.7.11":
-        os.system(f"img4 -i 17.7.11/Firmware/all_flash/LLB.ipad7b.RELEASE.im4p -k 8fdb4467bad79e3b0424b9476bb509f83e44ed079eb4a59b51e8ff6981dacdacf9850e862ba1b8637a722cbd88a34999 -o LLB.bin")
+    os.system(f"img4 -i 17.7.10/Firmware/all_flash/LLB.ipad7b.RELEASE.im4p -k 07e6e3098054425fcdc83d47351a7d9439512c4e0297ac7162250e6d543f5d55fda2fefed210aa446c70e6d529292861 -o LLB.bin")
     log(message="Successfully downloaded LLB.bin !", type="success")
 
     log(message="Patching signature checks...", type="progress")
@@ -736,10 +648,7 @@ def main():
     time.sleep(2)
 
     log(message="Patching device tree...", type="progress")
-    if currentOSVersion == "17.7.10":
-        os.system(f"img4 -i 17.7.10/Firmware/all_flash/DeviceTree.j{ipad_file}bap.im4p -o DeviceTree")
-    else:
-        os.system(f"img4 -i 17.7.11/Firmware/all_flash/DeviceTree.j{ipad_file}bap.im4p -o DeviceTree")
+    os.system(f"img4 -i 17.7.10/Firmware/all_flash/DeviceTree.j{ipad_file}bap.im4p -o DeviceTree")
     os.system(f"devicetree-parse DeviceTree > DeviceTree_j{ipad_file}bap.jsonc")
     os.system(f"patch DeviceTree_j{ipad_file}bap.jsonc dt-j{ipad_file}bap.diff")
 
@@ -759,63 +668,81 @@ def main():
     log(message="Uploading EVA.img4 ...", type="progress")
     send_file_to_ssh(local_path="EVA.img4", remote_path=f"/mnt6/{boot_manifest_hash}/usr/standalone/firmware/FUD/")
     time.sleep(2)
-    log(message="Rebooting into iOS 17 rootless...", type="progress")
+    if option == "restore":
+        log(message="Deleting iOS 17 ...", type="progress")
+        execute_ssh_command_without_output(command=f"cd .. && cd .. && cd .. && cd .. && cd mnt1 && rm -rf *")
+        execute_ssh_command_without_output(command=f"cd .. && cd .. && cd .. && cd .. && cd mnt1 && sync")
+        snapshot_name = execute_ssh_command_with_output(command=f"cd .. && cd .. && cd .. && cd .. && snaputil -l mnt1")
+        snapshot_name = snapshot_name.replace("\n", "")
+        log(message=f"Editing snapshot: {snapshot_name} ...", type="progress")
+        log(message="Renaming ...", type="progress")
+        execute_ssh_command_without_output(command=f"cd .. && cd .. && cd .. && cd .. && snaputil -n {snapshot_name} orig-fs mnt1")
+        log(message="Deleting orig-fs ...", type="progress")
+        execute_ssh_command_without_output(command=f"cd .. && cd .. && cd .. && cd .. && snaputil -d orig-fs mnt1")
+        log(message="Unmounting ...", type="progress")
+        execute_ssh_command_without_output(command=f"cd .. && cd .. && cd .. && cd .. && cd mnt1 && sync")
+        execute_ssh_command_without_output(command=f"cd .. && cd .. && cd .. && cd .. && /sbin/umount mnt1")
+        log(message="Cleaning up files ...", type="progress")
+        execute_ssh_command_without_output(command=f"cd .. && cd .. && cd .. && cd .. && cd mnt6 && cd cryptex1 && cd current && rm -rf os.dmg && sync")
+        log(message="Successfully deleted iOS 17 !", type="success")
+        log(message="Setting up NVRam ...", type="progress")
+        execute_ssh_command_with_output(command=f"/usr/sbin/nvram p1-fakefs-rootdev=disk1s{volume_number}")
+    if option != "restore":
+        log(message="Rebooting into iOS 17 rootless...", type="progress")
+    else:
+        log(message="Rebooting ...", type="progress")
     time.sleep(4)
     execute_ssh_command_without_output(command="/sbin/reboot")
-    os.system("palera1n -l")
-    when_ready_to_palera1n = input("\n#### STEP 2\n\nOnce your device boots into iOS 17, press [ENTER/Return] ")
-    log(message="Waiting 15s ...", type="progress")
-    time.sleep(15)
-    reconnect_cable = input(f"[{datetime.datetime.now().strftime("%H:%M:%S")}] Reconnect the cable and then press [ENTER/Return] ")
-    log(message="Waiting 15s ...", type="progress")
-
-    time.sleep(15)
-
-    os.system("clear")
-    print(text2art("upRa1n", font='tasty1'))
-
-    process.terminate()
-    os.system("killall iproxy")
-    time.sleep(2)
-    process = subprocess.Popen(
-        ["iproxy", "2222", "44"],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL
-    )
-
-
-    time.sleep(4)
-
-    make_sure = input(f"[{datetime.datetime.now().strftime("%H:%M:%S")}] Before continuing, make sure the device is visible in Finder. Press [ENTER/Return]: ")
-
-    log(message="Fixing up var ...", type="progress")
-    time.sleep(2)
-    execute_palera1n_command(command=f"mount_apfs /dev/disk1s{volume_number} /cores/fs/fake")
-    time.sleep(3)
-    execute_palera1n_command(command="rm -rf /private/var/staged_system_apps")
-    time.sleep(5)
-    execute_palera1n_command(command="mv /cores/fs/fake/private/var/staged_system_apps /private/var")
-    time.sleep(15)
-    execute_palera1n_command(command=f"/usr/sbin/nvram p1-fakefs-rootdev=disk1s{volume_number}")
-    time.sleep(3)
-    execute_palera1n_command(command=f"nvram p1-fakefs-rootdev=disk1s{volume_number}")
-    time.sleep(3)
-    execute_palera1n_command(command="snaputil -c orig-fs /cores/fs/fake")
-    time.sleep(5)
-    log(message="Rebooting ...", type="progress")
-    time.sleep(3)
-    execute_palera1n_command("reboot")
-
     if option == "dualboot":
+        os.system("palera1n -l")
+        when_ready_to_palera1n = input("\n#### STEP 2\n\nOnce your device boots into iOS 17, press [ENTER/Return] ")
+        log(message="Waiting 15s ...", type="progress")
+        time.sleep(15)
+        reconnect = input("Reconnect the cable and then press [ENTER/Return] ")
+        log(message="Waiting 15s ...", type="progress")
+
+        time.sleep(15)
+
+        os.system("clear")
+        print(text2art("upRa1n"))
+
+        process.terminate()
+        os.system("killall iproxy")
+        time.sleep(2)
+        process = subprocess.Popen(
+            ["iproxy", "2222", "44"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL
+        )
+
+        time.sleep(4)
+
+        log(message="Fixing up var ...", type="progress")
+        time.sleep(2)
+        execute_palera1n_command(command=f"mount_apfs /dev/disk1s{volume_number} /cores/fs/fake")
+        time.sleep(3)
+        execute_palera1n_command(command="rm -rf /private/var/staged_system_apps")
+        time.sleep(5)
+        execute_palera1n_command(command="mv /cores/fs/fake/private/var/staged_system_apps /private/var")
+        time.sleep(15)
+        execute_palera1n_command(command=f"/usr/sbin/nvram p1-fakefs-rootdev=disk1s{volume_number}")
+        time.sleep(3)
+        execute_palera1n_command(command=f"nvram p1-fakefs-rootdev=disk1s{volume_number}")
+        time.sleep(3)
+        execute_palera1n_command(command="snaputil -c orig-fs /cores/fs/fake")
+        time.sleep(5)
+        log(message="Rebooting ...", type="progress")
+        time.sleep(3)
+        execute_palera1n_command("reboot")
+
         boot_device()
     else:
-        boot_device_and_clean()
-
+        boot_device()
     
 
 def boot_device():
     os.system("clear")
-    print(text2art("upRa1n", font='tasty1'))
+    print(text2art("upRa1n"))
     print("# Tethered dualboot/restore iPadOS 18 for iPad 6")
     print("# Developed by ZeroxDev")
     print("#===== Thanks to =====")
@@ -825,72 +752,14 @@ def boot_device():
     print("# Mineek, Nick Chan, Samara, HAHALOSAH for palera1n")
     print("# crystall1nedev for SSV patch")
     print("#=====================\n\n")
-    enter = input(f"[{datetime.datetime.now().strftime("%H:%M:%S")}] To boot your device into iOS 18, put your device into Recovery Mode and then press [ENTER/Return] ")
+    enter = input(f"[{datetime.datetime.now().strftime('%H:%M:%S')}] To boot your device into iOS 18, put your device into Recovery Mode and then press [ENTER/Return] ")
     os.system("sudo sh boot.sh")
     print("\n\nDONE!")
     print("[==================================================] 100.0%")
     sys.exit()
     
-def boot_device_and_clean():
-    os.system("clear")
-    print(text2art("upRa1n", font='tasty1'))
-    print("# Tethered dualboot/restore iPadOS 18 for iPad 6")
-    print("# Developed by ZeroxDev")
-    print("#===== Thanks to =====")
-    print("# asdfugil for the installation guide")
-    print("# Nathan (verygenericname) for SSHRD Script")
-    print("# kok3shidoll, Clarity, Mineek for turdusra1n")
-    print("# Mineek, Nick Chan, Samara, HAHALOSAH for palera1n")
-    print("# crystall1nedev for SSV patch")
-    print("#=====================\n\n")
-    enter = input(f"[{datetime.datetime.now().strftime("%H:%M:%S")}] To boot your device into iOS 18, put your device into Recovery Mode and then press [ENTER/Return] ")
-    info = input(f"[{datetime.datetime.now().strftime("%H:%M:%S")}] When you see the message 'disconnected', press Ctrl + C. ")
-    os.system("sudo sh boot.sh")
-    print("\n\n")
-    when_ready_to_palera1n = input("\n#### STEP 2\n\nOnce your device boots into iOS 18, press [ENTER/Return] ")
-    log(message="Waiting 15s ...", type="progress")
-    time.sleep(15)
-    reconnect_cable = input(f"[{datetime.datetime.now().strftime("%H:%M:%S")}] Reconnect the cable and then press [ENTER/Return] ")
-    log(message="Waiting 15s ...", type="progress")
 
-    time.sleep(15)
-
-    os.system("clear")
-    print(text2art("upRa1n", font='tasty1'))
-    os.system("killall iproxy")
-    time.sleep(2)
-
-    process = subprocess.Popen(
-        ["iproxy", "2222", "44"],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL
-    )
-
-    time.sleep(2)
-
-    make_sure = input(f"[{datetime.datetime.now().strftime("%H:%M:%S")}] Before continuing, make sure the device is visible in Finder. Press [ENTER/Return]: ")
-
-    log(message="Deleting iOS 17 ...", type="progress")
-
-    execute_palera1n_command(command="mkdir mnt1 && mount_apfs /dev/disk1s1 mnt1")
-    execute_palera1n_command(command="cd mnt1 && rm -rf * && sync")
-    time.sleep(5)
-    execute_palera1n_command(command="snaputil -l mnt1")
-    time.sleep(2)
-    snapshot_name = execute_palera1n_command_with_output(command=f"snaputil -l mnt1")
-    snapshot_name = snapshot_name.replace("\n", "")
-    execute_palera1n_command(command=f"snaputil -n {snapshot_name} orig-fs mnt1")
-    time.sleep(2)
-    execute_palera1n_command(command=f"snaputil -d orig-fs mnt1")
-    time.sleep(2)
-    execute_palera1n_command(command=f"/sbin/umount mnt1")
-    time.sleep(1)
-    execute_palera1n_command(command=f"cd /private/preboot/cryptex1/current && rm -rf os.dmg && sync")
-    time.sleep(2)
-    log(message="DONE!", type="success")
-    print("[==================================================] 100.0%")
-    sys.exit()
-
+    
     
 if __name__ == "__main__":
     try:
