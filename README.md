@@ -16,6 +16,9 @@ Tethered dualboot/restore of iOS 18 on iPad 6 (Wi-Fi and Cellular models). The d
 - **Mineek, Nick Chan, Samara, HAHALOSAH for palera1n** (https://palera.in)
 - **crystall1nedev for SSV patch**
 
+## Our discord server
+
+https://discord.gg/dWWJx5gX
 
 ## Dependencies
 You must install and compile the following dependencies and copy their executables to `/usr/local/bin/` (using `make` or `./autogen.sh`):
