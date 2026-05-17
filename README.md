@@ -4,7 +4,9 @@
 Tethered dualboot/restore iOS 18 on iPad 6 (Wi-Fi / Cellular)
 
 ## Description
-Tethered dualboot/restore of iOS 18 on iPad 6 (Wi-Fi and Cellular models). The device **must already be running iOS 17.7.10.**
+Tethered dualboot/restore of iOS 18 on iPad 6 (Wi-Fi and Cellular models). 
+
+The device **must already be running iOS 17.7.10 or iOS 17.7.11.**
 
 **Important:** This script only works on macOS (Intel/Apple Sillicon) (tested on macOS Monterey on a MacBook Pro 15" 2015, Apple Sillicon Mac with macOS Tahoe, Intel Mac with macOS Sonoma). If you have an iPad 6 Cellular, activate it before performing the dualboot.
 
@@ -61,9 +63,9 @@ Example:
 2. Clone this repository.
 3. Download:
    - iOS 18 firmware (any version) for **iPad 7** (Wi‑Fi or Cellular, depending on your model).
-   - iOS 17.7.10 firmware for **iPad 6** (Wi‑Fi or Cellular, matching your device).
+   - iOS 17.7.10 (or .11) firmware for **iPad 6** (Wi‑Fi or Cellular, matching your device).
 4. Place the iOS 18 firmware file in the same directory as `upRa1n.py`.
-5. Extract the iOS 17.7.10 firmware into a folder named `17.7.10/`.
+5. Extract the iOS 17.7.10 (.11) firmware into a folder named `17.7.10/ (17.7.11/)`.
 6. Install required Python packages:
    ```bash
    pip3 install colorama art paramiko tqdm scp requests pyhpke
@@ -87,21 +89,11 @@ The `upRa1n` folder should look like this after completing all the steps:
 
 ## Known issues
 
-- ### There's no palera1n on the home screen
-Solution:
-
-
-Simply reboot your device, or instead, open shortcuts, create an "Open Application" shortcut, and select palera1n
-
 - ### Black wallpaper
 Solution:
 
 Set iOS 18 wallpaper in Settings after connecting to Wi-Fi
 
-- ### Applications won't open
-Solution:
-
-Just delete them and download again from the App Store
 
 - ### Poor performance
 Solution:
