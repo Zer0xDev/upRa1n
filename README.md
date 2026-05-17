@@ -16,7 +16,7 @@ The device **must already be running iOS 17.7.10 or iOS 17.7.11.**
 - **verygenericname (Nathan) for SSHRD Script** (https://github.com/verygenericname/SSHRD_Script).
 - **kok3shidoll, Clarity, Mineek for turdusra1n** (https://sep.lol).
 - **Mineek, Nick Chan, Samara, HAHALOSAH for palera1n** (https://palera.in)
-- **crystall1nedev for SSV patch**
+- **crystall1nedev for SSV patch (https://github.com/crystall1nedev/ipad6-ipados18/tree/ssv-patch)**
 
 ## Our discord server
 
@@ -29,7 +29,7 @@ You must install and compile the following dependencies and copy their executabl
 > The compiled dependencies (for intel mac) are in Releases. But I HIGHLY recommend compiling them manually
 
 - **aea** – https://github.com/dhinakg/aeota/tree/53e461d9788744bdd107e7d2043d71625324a682
-- **iBootpatch2** – https://github.com/Zer0xDev/upRa1n/blob/main/ibootpatch2-ssv-patch.zip
+- **iBootpatch2** – https://github.com/crystall1nedev/ipad6-ipados18/tree/ssv-patch
 - **img4lib** – https://github.com/xerub/img4lib/tree/69772c72f3c08f021ec9fa4c386f2b3df60a38b7
 - **devicetree-parse and devicetree-repack** – https://github.com/khanhduytran0/devicetree-parse.git
 - **palera1n** – https://palera.in
