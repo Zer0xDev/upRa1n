@@ -346,13 +346,13 @@ def execute_ssh_command_with_output(command: str):
 
 def log(message: str, type: str):
     if type == "error":
-        print(f"[{Fore.RED}{datetime.datetime.now().strftime("%H:%M:%S")}{Fore.RESET}] {message}")
+        print(f"[{Fore.RED}{datetime.datetime.now().strftime('%H:%M:%S')}{Fore.RESET}] {message}")
     elif type == "warning":
-        print(f"[{Fore.YELLOW}{datetime.datetime.now().strftime("%H:%M:%S")}{Fore.RESET}] {message}")
+        print(f"[{Fore.YELLOW}{datetime.datetime.now().strftime('%H:%M:%S')}{Fore.RESET}] {message}")
     elif type == "success":
-        print(f"[{Fore.GREEN}{datetime.datetime.now().strftime("%H:%M:%S")}{Fore.RESET}] {message}")
+        print(f"[{Fore.GREEN}{datetime.datetime.now().strftime('%H:%M:%S')}{Fore.RESET}] {message}")
     elif type == "progress":
-        print(f"[{Fore.BLUE}{datetime.datetime.now().strftime("%H:%M:%S")}{Fore.RESET}] {message}")
+        print(f"[{Fore.BLUE}{datetime.datetime.now().strftime('%H:%M:%S')}{Fore.RESET}] {message}")
 
 def check_and_delete(filename: str):
     if os.path.exists(filename):
@@ -451,19 +451,26 @@ def main():
     version = input("\n==> Enter iOS Version: ")
     model = input("\n==> Select iPad model (1 -- WiFi, 2 -- Cellular): ")
     currentOSVersion = input("\n==> What version of iPadOS is installed on your device?: ")
-    if (currentOSVersion == "17.7.10" or currentOSVersion == "17.7.11"):
+    if (currentOSVersion == "17.7.10" and model == "1"):
+        pass
+    elif (currentOSVersion == "17.7.11" and model == "1"):
+        pass
+    elif (currentOSVersion == "17.7.10" and model == "2"):
         pass
     else:
-        log(message="Unsupported iPadOS version. Update your iPad to iPadOS 17.7.10 or 17.7.11", type="error")
+        log(message="Unsupported iPadOS version. Update your iPad to iPadOS 17.7.10 or 17.7.11. If you are using iPad 6 Cellular, use iOS 17.7.10 IPSW", type="error")
         sys.exit()
     volume_number = 0
+    preboot_number = 5
     ipad_file = ""
     if model == "1":
         volume_number = 8
+        preboot_number = 5
         ipad_file = "71"
         log(message="Selected iPad 6 WiFi model!", type="success")
     else:
         volume_number = 9
+        preboot_number = 6
         ipad_file = "72"
         log(message="Selected iPad 6 Cellular model!", type="success")
     print("\n")
@@ -621,8 +628,8 @@ def main():
     os.system("img4 -i LLB3.bin -A -T ibss -M IM4M -o LLB.img4")
     log(message="Successfully patched signature checks and SSV checks!", type="success")
 
-    log(message="Mounting /dev/disk1s5 to /mnt6/ ...", type="progress")
-    execute_ssh_command_with_output(command="/sbin/mount_apfs /dev/disk1s5 /mnt6")
+    log(message=f"Mounting /dev/disk1s{preboot_number} to /mnt6/ ...", type="progress")
+    execute_ssh_command_with_output(command=f"/sbin/mount_apfs /dev/disk1s{preboot_number} /mnt6")
 
     time.sleep(3)
 
@@ -674,8 +681,8 @@ def main():
     execute_ssh_command_with_output(command=f"/System/Library/Filesystems/apfs.fs/apfs_invert -d /dev/disk0s1 -s {volume_number} -n root.dmg")
     time.sleep(2)
 
-    log(message=f"Mounting /dev/disk1s5 and /dev/disk1s{volume_number} ...", type="progress")
-    execute_ssh_command_with_output(command="/sbin/mount_apfs /dev/disk1s5 /mnt6")
+    log(message=f"Mounting /dev/disk1s{preboot_number} and /dev/disk1s{volume_number} ...", type="progress")
+    execute_ssh_command_with_output(command=f"/sbin/mount_apfs /dev/disk1s{preboot_number} /mnt6")
     time.sleep(2)
     execute_ssh_command_with_output(command=f"/sbin/mount_apfs /dev/disk1s{volume_number} /mnt8")
     time.sleep(2)
