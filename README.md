@@ -6,7 +6,7 @@ Tethered dualboot/restore iOS 18 on iPad 6 (Wi-Fi / Cellular)
 ## Description
 Tethered dualboot/restore of iOS 18 on iPad 6 (Wi-Fi and Cellular models). 
 
-The device **must already be running iOS 17.7.10 or iOS 17.7.11.**
+The device **must already be running iOS 17.7.10 or iOS 17.7.11.** (if you are using iPad 6 Cellular, this WONT WORK ON IOS 17.7.11, use 17.7.10)
 
 **Important:** This script only works on macOS (Intel/Apple Sillicon) (tested on macOS Monterey on a MacBook Pro 15" 2015, Apple Sillicon Mac with macOS Tahoe, Intel Mac with macOS Sonoma). If you have an iPad 6 Cellular, activate it before performing the dualboot.
 
