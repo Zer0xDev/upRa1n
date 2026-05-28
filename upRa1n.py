@@ -457,8 +457,10 @@ def main():
         pass
     elif (currentOSVersion == "17.7.10" and model == "2"):
         pass
+    elif (currentOSVersion == "17.7.11" and model == "2"):
+        pass
     else:
-        log(message="Unsupported iPadOS version. Update your iPad to iPadOS 17.7.10 or 17.7.11. If you are using iPad 6 Cellular, use iOS 17.7.10 IPSW", type="error")
+        log(message="Unsupported iPadOS version. Update your iPad to iPadOS 17.7.10 or 17.7.11", type="error")
         sys.exit()
     volume_number = 0
     preboot_number = 5
