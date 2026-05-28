@@ -20,7 +20,7 @@ The device **must already be running iOS 17.7.10 or iOS 17.7.11.** (if you are u
 
 ## Our discord server
 
-https://discord.gg/dWWJx5gX
+https://discord.gg/NEfwqZaeB
 
 ## Dependencies
 You must install and compile the following dependencies and copy their executables to `/usr/local/bin/` (using `make` or `./autogen.sh`):
