@@ -362,8 +362,7 @@ def jailbreak_device():
     log(message="Okay, we'll run palera1n so you can jailbreak your iPad.", type="progress")
     time.sleep(1)
     os.system("palera1n -l")
-    ask = input(f"[{datetime.datetime.now().strftime("%H:%M:%S")}] Once your device boots into iOS 17, press [ENTER/Return] ")
-
+    ask = input(f"[{datetime.datetime.now().strftime('%H:%M:%S')}] Once your device boots into iOS 17, press [ENTER/Return] ")
 
 def main():
     os.system("sudo killall iproxy")
@@ -381,36 +380,49 @@ def main():
     result = check_dependencies()
     option = ""
     if not result:
-        ask = input(f"[{datetime.datetime.now().strftime("%H:%M:%S")}] Do you want to force skip dependencies check? (Y/n): ")
+        ask = input(f"[{datetime.datetime.now().strftime('%H:%M:%S')}] Do you want to force skip dependencies check? (Y/n): ")
         log(message="WARNING! This may break installation process!", type="warning")
         if "y" or "Y" in ask:
             log(message="Force skipping dependencies check ...", type="warning")
         else:
             sys.exit()
-    if os.path.exists("17.7.10") or os.path.exists("17.7.11"):
-        pass
-    else:
-        log(message="Could not find unpacked iOS 17.7.10 or 17.7.11 IPSW. Download iPad 6 iOS 17.7.10 (.11) IPSW and extract it into /17.7.10 (.11) folder !", type="error")
-        sys.exit()
     try:
         if sys.argv[1] == "boot":
             boot_device()
         elif "restore" in sys.argv[1]:
             option = "restore"
             log(message="Selected: RESTORE", type="success")
+            if os.path.exists("17.7.10") or os.path.exists("17.7.11"):
+                if os.path.exists("17.7.10/Firmware/"):
+                    pass
+                else:
+                    log(message="Could not find unpacked iOS 17.7.10 or 17.7.11 IPSW. Download iPad 6 iOS 17.7.10 (.11) IPSW and extract it into /17.7.10 (.11) folder !", type="error")
+            else:
+                log(message="Could not find unpacked iOS 17.7.10 or 17.7.11 IPSW. Download iPad 6 iOS 17.7.10 (.11) IPSW and extract it into /17.7.10 (.11) folder !", type="error")
+                sys.exit()
         elif "dualboot" in sys.argv[1]:
             option = "dualboot"
             log(message="Selected: DUALBOOT", type="success")
+            if os.path.exists("17.7.10") or os.path.exists("17.7.11"):
+                if os.path.exists("17.7.10/Firmware/"):
+                    pass
+                else:
+                    log(message="Could not find unpacked iOS 17.7.10 or 17.7.11 IPSW. Download iPad 6 iOS 17.7.10 (.11) IPSW and extract it into /17.7.10 (.11) folder !", type="error")
+            else:
+                log(message="Could not find unpacked iOS 17.7.10 or 17.7.11 IPSW. Download iPad 6 iOS 17.7.10 (.11) IPSW and extract it into /17.7.10 (.11) folder !", type="error")
+                sys.exit()
         else:
             print("Usage: python3 upRa1n.py <options>\n\nCommands:\n\n   restore               Tethered restore iOS 18 on iPad 6\n   dualboot              Tethered dualboot iOS 18 on iPad6\n   boot                  Boot your device into iOS 18\n\nExample:\n\n   python3 upRa1n.py restore\n   python3 upRa1n.py boot\n")
             sys.exit()
+
+        
     except Exception as e:
         print("Usage: python3 upRa1n.py <options>\n\nCommands:\n\n   restore               Tethered restore iOS 18 on iPad 6\n   dualboot              Tethered dualboot iOS 18 on iPad6\n   boot                  Boot your device into iOS 18\n\nExample:\n\n   python3 upRa1n.py restore\n   python3 upRa1n.py boot\n")
         sys.exit()
 
 
     if os.path.exists("disk2.bin"):
-        ask = input(f"[{datetime.datetime.now().strftime("%H:%M:%S")}] Do you want to clean old files? (Y/n): ")
+        ask = input(f"[{datetime.datetime.now().strftime('%H:%M:%S')}] Do you want to clean old files? (Y/n): ")
         if "y" in ask or "Y" in ask:
             check_and_delete("IM4M")
             check_and_delete("devicetred")
@@ -486,7 +498,7 @@ def main():
             shutil.rmtree(version)
             sys.exit()
     else:
-        warning = input(f"[{datetime.datetime.now().strftime("%H:%M:%S")}] Make sure you have more than 25GB of free space on your Mac, otherwise the script may not work. Press [ENTER/Return]")
+        warning = input(f"[{datetime.datetime.now().strftime('%H:%M:%S')}] Make sure you have more than 25GB of free space on your Mac, otherwise the script may not work. Press [ENTER/Return]")
         log(message="Unpacking IPSW file...", type="progress")
         try:
             ipsw = ZipFile(file=ipsw_file)
@@ -540,7 +552,7 @@ def main():
                 
         os.chdir("..")
     
-    ask_for_jailbreak = input(f"[{datetime.datetime.now().strftime("%H:%M:%S")}] Is your device jailbroken? [Y/n]: ")
+    ask_for_jailbreak = input(f"[{datetime.datetime.now().strftime('%H:%M:%S')}] Is your device jailbroken? [Y/n]: ")
 
     if ask_for_jailbreak == "n" or ask_for_jailbreak == "N":
         jailbreak_device()
@@ -553,7 +565,7 @@ def main():
     log(message="Waiting 15s ...", type="progress")
     time.sleep(15)
 
-    reconnect_cable = input(f"[{datetime.datetime.now().strftime("%H:%M:%S")}] Reconnect the cable and then press [ENTER/Return] ")
+    reconnect_cable = input(f"[{datetime.datetime.now().strftime('%H:%M:%S')}] Reconnect the cable and then press [ENTER/Return] ")
 
     log(message="Waiting 15s ...", type="progress")
 
@@ -565,7 +577,7 @@ def main():
         stderr=subprocess.DEVNULL
     )
 
-    warning = input(f"[{datetime.datetime.now().strftime("%H:%M:%S")}] Make sure you have more than 5GB of free space on your Mac, otherwise the script may not work. Press [ENTER/Return]")
+    warning = input(f"[{datetime.datetime.now().strftime('%H:%M:%S')}] Make sure you have more than 5GB of free space on your Mac, otherwise the script may not work. Press [ENTER/Return]")
 
     time.sleep(1)
 
@@ -579,7 +591,7 @@ def main():
 
     os.chdir("SSHRD_Script")
 
-    user_put_dfu = input(f"[{datetime.datetime.now().strftime("%H:%M:%S")}] Put your device into Recovery Mode, then into DFU mode and then press [ENTER/Return]: ")
+    user_put_dfu = input(f"[{datetime.datetime.now().strftime('%H:%M:%S')}] Put your device into Recovery Mode, then into DFU mode and then press [ENTER/Return]: ")
 
     log(message="Downloading iOS 17.7 ramdisk...", type="progress")
 
@@ -626,8 +638,21 @@ def main():
     os.system("./SSHRD_Script/Darwin/iBoot64Patcher LLB.bin LLB2.bin")
 
     os.system("iBootpatch2 -RF -i LLB2.bin -o LLB3.bin")
+    if os.path.exists("LLB3.bin"):
+        log(message="Successfully created 'LLB3.bin' ! ", type="success")
+    else:
+        log(message="Could not find LLB3.bin !", type="error")
+        sys.exit()
+
     os.system("img4 -i disk2.bin -m IM4M")
     os.system("img4 -i LLB3.bin -A -T ibss -M IM4M -o LLB.img4")
+
+    if os.path.exists("LLB.img4"):
+        log(message="Successfully created 'LLB.img4' ! ", type="success")
+    else:
+        log(message="Could not find LLB.img4 !", type="error")
+        sys.exit()
+
     log(message="Successfully patched signature checks and SSV checks!", type="success")
 
     log(message=f"Mounting /dev/disk1s{preboot_number} to /mnt6/ ...", type="progress")
@@ -775,7 +800,7 @@ def main():
     when_ready_to_palera1n = input("\n#### STEP 2\n\nOnce your device boots into iOS 17, press [ENTER/Return] ")
     log(message="Waiting 15s ...", type="progress")
     time.sleep(15)
-    reconnect_cable = input(f"[{datetime.datetime.now().strftime("%H:%M:%S")}] Reconnect the cable and then press [ENTER/Return] ")
+    reconnect_cable = input(f"[{datetime.datetime.now().strftime('%H:%M:%S')}] Reconnect the cable and then press [ENTER/Return] ")
     log(message="Waiting 15s ...", type="progress")
 
     time.sleep(15)
@@ -795,7 +820,7 @@ def main():
 
     time.sleep(4)
 
-    make_sure = input(f"[{datetime.datetime.now().strftime("%H:%M:%S")}] Before continuing, make sure the device is visible in Finder. Press [ENTER/Return]: ")
+    make_sure = input(f"[{datetime.datetime.now().strftime('%H:%M:%S')}] Before continuing, make sure the device is visible in Finder. Press [ENTER/Return]: ")
 
     log(message="Fixing up var ...", type="progress")
     time.sleep(2)
@@ -834,11 +859,15 @@ def boot_device():
     print("# Mineek, Nick Chan, Samara, HAHALOSAH for palera1n")
     print("# crystall1nedev for SSV patch")
     print("#=====================\n\n")
-    enter = input(f"[{datetime.datetime.now().strftime("%H:%M:%S")}] To boot your device into iOS 18, put your device into Recovery Mode and then press [ENTER/Return] ")
-    os.system("sudo sh boot.sh")
-    print("\n\nDONE!")
-    print("[==================================================] 100.0%")
-    sys.exit()
+    if os.path.exists("LLB.img4"):
+        enter = input(f"[{datetime.datetime.now().strftime('%H:%M:%S')}] To boot your device into iOS 18, put your device into Recovery Mode and then press [ENTER/Return] ")
+        os.system("sudo sh boot.sh")
+        print("\n\nDONE!")
+        print("[==================================================] 100.0%")
+        sys.exit()
+    else:
+        log(message="Could not find LLB.img4", type="error")
+        sys.exit()
     
 def boot_device_and_clean():
     os.system("clear")
@@ -852,14 +881,14 @@ def boot_device_and_clean():
     print("# Mineek, Nick Chan, Samara, HAHALOSAH for palera1n")
     print("# crystall1nedev for SSV patch")
     print("#=====================\n\n")
-    enter = input(f"[{datetime.datetime.now().strftime("%H:%M:%S")}] To boot your device into iOS 18, put your device into Recovery Mode and then press [ENTER/Return] ")
-    info = input(f"[{datetime.datetime.now().strftime("%H:%M:%S")}] When you see the message 'disconnected', press Ctrl + C. ")
+    enter = input(f"[{datetime.datetime.now().strftime('%H:%M:%S')}] To boot your device into iOS 18, put your device into Recovery Mode and then press [ENTER/Return] ")
+    info = input(f"[{datetime.datetime.now().strftime('%H:%M:%S')}] When you see the message 'disconnected', press Ctrl + C. ")
     os.system("sudo sh boot.sh")
     print("\n\n")
     when_ready_to_palera1n = input("\n#### STEP 2\n\nOnce your device boots into iOS 18, press [ENTER/Return] ")
     log(message="Waiting 15s ...", type="progress")
     time.sleep(15)
-    reconnect_cable = input(f"[{datetime.datetime.now().strftime("%H:%M:%S")}] Reconnect the cable and then press [ENTER/Return] ")
+    reconnect_cable = input(f"[{datetime.datetime.now().strftime('%H:%M:%S')}] Reconnect the cable and then press [ENTER/Return] ")
     log(message="Waiting 15s ...", type="progress")
 
     time.sleep(15)
@@ -877,7 +906,7 @@ def boot_device_and_clean():
 
     time.sleep(2)
 
-    make_sure = input(f"[{datetime.datetime.now().strftime("%H:%M:%S")}] Before continuing, make sure the device is visible in Finder. Press [ENTER/Return]: ")
+    make_sure = input(f"[{datetime.datetime.now().strftime('%H:%M:%S')}] Before continuing, make sure the device is visible in Finder. Press [ENTER/Return]: ")
 
     log(message="Deleting iOS 17 ...", type="progress")
 
