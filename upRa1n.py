@@ -125,6 +125,7 @@ def execute_palera1n_command_with_output(command: str):
 
 
 def check_dependencies():
+    log(message="Checking: aea", type="progress")
     result = subprocess.run(['aea'],
                        stdout=subprocess.PIPE,
                        stderr=subprocess.PIPE,
@@ -154,6 +155,8 @@ def check_dependencies():
 
     ######
 
+    log(message="Checking: img4", type="progress")
+
     result = subprocess.run(['img4'],
                         stdout=subprocess.PIPE,
                         stderr=subprocess.PIPE,
@@ -171,6 +174,8 @@ def check_dependencies():
 
     ######
 
+    log(message="Checking: iBootPatch2", type="progress")
+
     result = subprocess.run(['iBootPatch2'],
                         stdout=subprocess.PIPE,
                         stderr=subprocess.PIPE,
@@ -186,6 +191,8 @@ def check_dependencies():
         log(message="iBootPatch2 is not installed", type="error")
 
     ######
+
+    log(message="Checking: palera1n", type="progress")
 
     result = subprocess.run(['palera1n'],
                         stdout=subprocess.PIPE,
@@ -203,6 +210,8 @@ def check_dependencies():
 
     ######
 
+    log(message="Checking: devicetree-parse", type="progress")
+
     result = subprocess.run(['devicetree-parse'],
                         stdout=subprocess.PIPE,
                         stderr=subprocess.PIPE,
@@ -218,6 +227,8 @@ def check_dependencies():
         log(message="devicetree-parse is not installed", type="error")
 
     ######
+
+    log(message="Checking: devicetree-repack", type="progress")
 
     result = subprocess.run(['devicetree-repack'],
                         stdout=subprocess.PIPE,
@@ -235,6 +246,8 @@ def check_dependencies():
 
     ######
 
+    log(message="Checking: iproxy", type="progress")
+
     result = subprocess.run(['iproxy'],
                         stdout=subprocess.PIPE,
                         stderr=subprocess.PIPE,
@@ -248,6 +261,8 @@ def check_dependencies():
         iproxy = True
     else:
         log(message="iproxy is not installed", type="error")
+
+    log(message="Checking: irecovery", type="progress")
 
     result = subprocess.run(['irecovery'],
                         stdout=subprocess.PIPE,
@@ -379,10 +394,10 @@ def main():
     print("#=====================\n\n")
     result = check_dependencies()
     option = ""
-    if not result:
+    if result == False:
         ask = input(f"[{datetime.datetime.now().strftime('%H:%M:%S')}] Do you want to force skip dependencies check? (Y/n): ")
         log(message="WARNING! This may break installation process!", type="warning")
-        if "y" or "Y" in ask:
+        if ask.lower() == "y":
             log(message="Force skipping dependencies check ...", type="warning")
         else:
             sys.exit()
