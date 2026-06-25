@@ -425,7 +425,10 @@ def main():
                 if os.path.exists("17.7.10/Firmware/"):
                     pass
                 else:
-                    log(message="Could not find unpacked iOS 17.7.10 or 17.7.11 IPSW. Download iPad 6 iOS 17.7.10 (.11) IPSW and extract it into /17.7.10 (.11) folder !", type="error")
+                    if os.path.exists("17.7.11/Firmware"):
+                        pass
+                    else:
+                        log(message="Could not find unpacked iOS 17.7.10 or 17.7.11 IPSW. Download iPad 6 iOS 17.7.10 (.11) IPSW and extract it into /17.7.10 (.11) folder !", type="error")
             else:
                 log(message="Could not find unpacked iOS 17.7.10 or 17.7.11 IPSW. Download iPad 6 iOS 17.7.10 (.11) IPSW and extract it into /17.7.10 (.11) folder !", type="error")
                 sys.exit()
